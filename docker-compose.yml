@@ -1,0 +1,31 @@
+services:
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      # Only will build development stage from our dockerfile
+      target: development
+    volumes:
+      - ./app/:/usr/src/app/
+      - /usr/local/app/node_modules/
+    env_file:
+      - .env
+    # Run a command against the development stage of the image
+    command: npm run start:dev
+    ports:
+      - 3000:3000
+    depends_on:
+       - mariadb
+  mariadb:
+    image: mariadb:latest
+    restart: 'no'
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
+    volumes:
+      - docker-nest-mariadb:/var/lib/mysql
+      # copy the sql script to create tables
+      - ./sql/:/docker-entrypoint-initdb.d/
+volumes:
+  docker-nest-mariadb:
