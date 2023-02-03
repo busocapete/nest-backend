@@ -1,7 +1,8 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { CdrEntity } from '../cdr/entities/cdr.entity';
 import { OrganisationEntity } from './entitys/organisation.entity';
 
-export const entities = [OrganisationEntity];
+export const entities = [OrganisationEntity, CdrEntity];
 
 export const dbConfigFactory: () => Promise<TypeOrmModuleOptions> =
   async () => ({
