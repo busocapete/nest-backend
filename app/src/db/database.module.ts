@@ -1,16 +1,14 @@
-import {Module} from '@nestjs/common';
-import {TypeOrmModule} from '@nestjs/typeorm';
-import {dbConfigFactory, entities} from './databaseProviders';
-
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { dbConfigFactory, entities } from './databaseProviders';
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
-      useFactory: dbConfigFactory
+      useFactory: dbConfigFactory,
     }),
-    TypeOrmModule.forFeature(entities)
+    TypeOrmModule.forFeature(entities),
   ],
   exports: [TypeOrmModule],
 })
-export class DatabaseModule {
-}
+export class DatabaseModule {}
