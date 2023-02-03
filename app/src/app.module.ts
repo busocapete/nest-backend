@@ -13,6 +13,8 @@ import { SimModule } from './sim/sim.module';
 import { RateModule } from './rate/rate.module';
 import { BillController } from './bill/bill.controller';
 import { SimService } from './sim/sim.service';
+import { BillService } from './bill/bill.service';
+import { BillModule } from './bill/bill.module';
 
 @Module({
   imports: [
@@ -22,6 +24,7 @@ import { SimService } from './sim/sim.service';
     CdrModule,
     SimModule,
     RateModule,
+    BillModule,
   ],
   controllers: [
     AppController,
@@ -29,6 +32,12 @@ import { SimService } from './sim/sim.service';
     CdrController,
     BillController,
   ],
-  providers: [AppService, OrganisationService, CdrService, SimService],
+  providers: [
+    AppService,
+    OrganisationService,
+    CdrService,
+    SimService,
+    BillService,
+  ],
 })
 export class AppModule {}

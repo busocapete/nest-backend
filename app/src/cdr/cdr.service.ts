@@ -9,9 +9,6 @@ export class CdrService {
     @InjectRepository(CdrEntity)
     private readonly cdrs: Repository<CdrEntity>,
   ) {}
-  // create(createCdrDto: CreateCdrDto) {
-  //   return 'This action adds a new cdr';
-  // }
 
   findAll(): Promise<CdrEntity[]> {
     return this.cdrs.find();
@@ -25,15 +22,11 @@ export class CdrService {
     });
   }
 
-  getBySimIds(simIds: number[]) {
+  async getBySimIds(simIds: number[]): Promise<CdrEntity[]> {
     return this.cdrs.findBy({
       simId: In(simIds),
     });
   }
-
-  // update(id: number, updateCdrDto: UpdateCdrDto) {
-  //   return `This action updates a #${id} cdr`;
-  // }
 
   async remove(id: number): Promise<void> {
     await this.cdrs.delete(id);

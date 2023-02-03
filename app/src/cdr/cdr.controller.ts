@@ -1,15 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Param, Delete } from '@nestjs/common';
 import { CdrService } from './cdr.service';
-import { CreateCdrDto } from './dto/create-cdr.dto';
-import { UpdateCdrDto } from './dto/update-cdr.dto';
 
 @Controller('cdr')
 export class CdrController {
