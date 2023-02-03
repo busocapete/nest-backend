@@ -5,6 +5,7 @@ import { SimEntity } from '../sim/entities/sim.entity';
 import { RateEntity } from '../rate/entities/rate.entity';
 import { RateZoneEntity } from './entitys/rateZone.entity';
 import { CdrSubscriber } from 'src/cdr/cdr.subscriber';
+import { CurrencyEntity } from 'src/currency/entities/currency.entity';
 
 export const entities = [
   OrganisationEntity,
@@ -12,6 +13,7 @@ export const entities = [
   SimEntity,
   RateEntity,
   RateZoneEntity,
+  CurrencyEntity,
 ];
 
 export const dbConfigFactory: () => Promise<TypeOrmModuleOptions> =
