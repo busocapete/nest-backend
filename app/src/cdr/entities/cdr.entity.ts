@@ -1,3 +1,5 @@
+import { RateZoneEntity } from 'src/db/entitys/rateZone.entity';
+import { RateEntity } from 'src/rate/entities/rate.entity';
 import {
   Column,
   Entity,
@@ -25,17 +27,17 @@ export class CdrEntity {
   //   @Column({ name: 'timestamp' })
   //   timeStamp: Date;
 
-  //   @ManyToOne(() => RateEntity, (rate) => rate, {
-  //     eager: true,
-  //   })
-  //   @JoinColumn({ name: 'rateZone_Id' })
-  //   rate: RateEntity;
+  @ManyToOne(() => RateEntity, (rate) => rate, {
+    eager: true,
+  })
+  @JoinColumn({ name: 'rateZone_Id' })
+  rate: RateEntity;
 
-  //   @ManyToOne(() => RateZoneEntity, (rateZone) => rateZone, {
-  //     eager: true,
-  //   })
-  //   @JoinColumn({ name: 'rateZone_Id' })
-  //   rateZone: RateZoneEntity;
+  @ManyToOne(() => RateZoneEntity, (rateZone) => rateZone, {
+    eager: true,
+  })
+  @JoinColumn({ name: 'rateZone_Id' })
+  rateZone: RateZoneEntity;
 
   // readonly totalCostPercdr //!!totalBillCost
   //cdrCost: number;
