@@ -10,6 +10,7 @@ import { CdrModule } from './cdr/cdr.module';
 import { CdrController } from './cdr/cdr.controller';
 import { CdrService } from './cdr/cdr.service';
 import { SimModule } from './sim/sim.module';
+import { RateModule } from './rate/rate.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { SimModule } from './sim/sim.module';
     OrganisationModule,
     CdrModule,
     SimModule,
+    RateModule,
   ],
   controllers: [AppController, OrganisationController, CdrController],
   providers: [AppService, OrganisationService, CdrService],
