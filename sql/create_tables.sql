@@ -70,7 +70,7 @@ INSERT IGNORE INTO
   VALUES
     (1, 1, '0.99'),
     (2, 2, '0.89'),
-    (3, 4, '1.99')
+    (3, 3, '1.99')
 ;
 
 CREATE TABLE IF NOT EXISTS `cdr` (
