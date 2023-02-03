@@ -40,5 +40,5 @@ export class CdrEntity {
   rateZone: RateZoneEntity;
 
   // readonly totalCostPercdr //!!totalBillCost
-  //cdrCost: number;
+  cdrCost: number;
 }

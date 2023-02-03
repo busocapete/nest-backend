@@ -4,6 +4,7 @@ import { OrganisationEntity } from './entitys/organisation.entity';
 import { SimEntity } from '../sim/entities/sim.entity';
 import { RateEntity } from '../rate/entities/rate.entity';
 import { RateZoneEntity } from './entitys/rateZone.entity';
+import { CdrSubscriber } from 'src/cdr/cdr.subscriber';
 
 export const entities = [
   OrganisationEntity,
@@ -23,4 +24,5 @@ export const dbConfigFactory: () => Promise<TypeOrmModuleOptions> =
     database: 'emnify',
     entities,
     synchronize: false,
+    subscribers: [CdrSubscriber],
   });
