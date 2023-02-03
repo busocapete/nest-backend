@@ -11,6 +11,8 @@ import { CdrController } from './cdr/cdr.controller';
 import { CdrService } from './cdr/cdr.service';
 import { SimModule } from './sim/sim.module';
 import { RateModule } from './rate/rate.module';
+import { BillController } from './bill/bill.controller';
+import { SimService } from './sim/sim.service';
 
 @Module({
   imports: [
@@ -21,7 +23,12 @@ import { RateModule } from './rate/rate.module';
     SimModule,
     RateModule,
   ],
-  controllers: [AppController, OrganisationController, CdrController],
-  providers: [AppService, OrganisationService, CdrService],
+  controllers: [
+    AppController,
+    OrganisationController,
+    CdrController,
+    BillController,
+  ],
+  providers: [AppService, OrganisationService, CdrService, SimService],
 })
 export class AppModule {}
