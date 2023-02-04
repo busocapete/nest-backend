@@ -6,11 +6,9 @@ import {
   Param,
   ParseIntPipe,
   Query,
+  Version,
 } from '@nestjs/common';
-import { CdrService } from 'src/cdr/cdr.service';
-import { BillDto } from './dto/bill.dto';
 import { OrganisationService } from '../organisation/organisation.service';
-import { SimService } from '../sim/sim.service';
 import { BillService } from './bill.service';
 import { CurrencyService } from 'src/currency/currency.service';
 import BillResponseDto from './dto/bill-response.dto';
@@ -19,37 +17,22 @@ import BillResponseDto from './dto/bill-response.dto';
 export class BillController {
   constructor(
     private readonly billService: BillService,
-    private readonly simService: SimService,
     private readonly organisationService: OrganisationService,
-    private readonly cdrsService: CdrService,
     private readonly currencyService: CurrencyService,
   ) {}
   @Get()
+  @Version('1')
   async get(
     @Param('id', ParseIntPipe) id: number,
     @Query('currency') currencyQuery: string,
   ): Promise<BillResponseDto> {
-    //Get organisation
-    const organisation = await this.organisationService.findOne(id);
+    //Get organisation with sims & cdrs
+    const organisation =
+      await this.organisationService.findByIdIncludeSimsAndCdrs(id);
 
     if (organisation === null) {
       throw new HttpException('Organisation Not Found', HttpStatus.NOT_FOUND);
     }
-
-    //Get sims for Organisation
-    const sims = await this.simService.findByOrgId(id);
-
-    if (sims === null || sims.length === 0) {
-      throw new HttpException(
-        'No sims are registered for this organisation',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    //Get CDR's for Organisations Sim Ids
-    const cdrs = await this.cdrsService.getBySimIds(
-      sims.map(({ simId }) => simId),
-    );
 
     let selectedCurrency = await this.currencyService.findByName(currencyQuery);
 
@@ -57,10 +40,12 @@ export class BillController {
       selectedCurrency = await this.currencyService.findByName('EUR');
     }
 
-    console.log(selectedCurrency);
-
-    //Calculate Total Cost
-    const totalCost = this.billService.calculateTotalCostofCdrs(cdrs);
+    //convert costs with selected currency rate
+    const organisationToReturn =
+      await this.billService.convertToSelectedCurrency(
+        organisation,
+        selectedCurrency,
+      );
 
     //return as BillDTO
     return {
@@ -69,10 +54,8 @@ export class BillController {
       user: 1,
       timeStamp: Date.now(),
       data: {
-        organisationName: organisation.name,
+        organisation: organisationToReturn,
         currency: selectedCurrency,
-        totalCost: totalCost * selectedCurrency.rate,
-        usage: cdrs.sort((a, b) => a.rateZoneId - b.rateZoneId),
       },
     };
   }

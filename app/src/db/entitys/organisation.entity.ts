@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { SimEntity } from 'src/sim/entities/sim.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('organisation')
 export class OrganisationEntity {
@@ -7,4 +8,12 @@ export class OrganisationEntity {
 
   @Column({ name: 'name' })
   name: string;
+
+  //readonly - not mapped
+  totalBillCost: number;
+
+  defaultCurrency = 'EUR';
+
+  @OneToMany(() => SimEntity, (sim) => sim.organisation)
+  sims: SimEntity[];
 }

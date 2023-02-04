@@ -11,11 +11,24 @@ export class OrganisationService {
   ) {}
 
   findAll(): Promise<OrganisationEntity[]> {
-    return this.organisations.find();
+    return this.organisations.find({
+      relations: {
+        sims: true,
+      },
+    });
   }
 
-  findOne(id: number): Promise<OrganisationEntity> {
-    return this.organisations.findOne({ where: { organisationId: id } });
+  findById(id: number): Promise<OrganisationEntity> {
+    return this.organisations.findOne({
+      where: { organisationId: id },
+    });
+  }
+
+  findByIdIncludeSimsAndCdrs(id: number): Promise<OrganisationEntity> {
+    return this.organisations.findOne({
+      where: { organisationId: id },
+      relations: ['sims', 'sims.cdrs'],
+    });
   }
 
   async remove(id: string): Promise<void> {

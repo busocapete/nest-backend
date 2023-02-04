@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { RateZoneEntity } from './rateZone.entity';
 
 @Entity('rate')
 export class RateEntity {
@@ -10,4 +17,8 @@ export class RateEntity {
 
   @Column({ name: 'amount_per_volume' })
   amountPerVolume: number;
+
+  @OneToOne(() => RateZoneEntity, (rateZone) => rateZone, { eager: true })
+  @JoinColumn({ name: 'ratezone_id' })
+  rateZone: RateZoneEntity;
 }

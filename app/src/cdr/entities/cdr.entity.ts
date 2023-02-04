@@ -1,5 +1,6 @@
 import { RateZoneEntity } from 'src/db/entitys/rateZone.entity';
 import { RateEntity } from 'src/rate/entities/rate.entity';
+import { SimEntity } from 'src/sim/entities/sim.entity';
 import {
   Column,
   Entity,
@@ -7,8 +8,6 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-// import { RateEntity } from '../../db/entitys/rate.entity';
-// import { RateZoneEntity } from '../../db/entitys/rateZone.entity';
 
 @Entity('cdr')
 export class CdrEntity {
@@ -24,20 +23,15 @@ export class CdrEntity {
   @Column({ name: 'volume' })
   volume: number;
 
-  //   @Column({ name: 'timestamp' })
-  //   timeStamp: Date;
-
   @ManyToOne(() => RateEntity, (rate) => rate, {
     eager: true,
   })
-  @JoinColumn({ name: 'rateZone_Id' })
+  @JoinColumn({ name: 'ratezone_id' })
   rate: RateEntity;
 
-  @ManyToOne(() => RateZoneEntity, (rateZone) => rateZone, {
-    eager: true,
-  })
-  @JoinColumn({ name: 'rateZone_Id' })
-  rateZone: RateZoneEntity;
+  @ManyToOne(() => SimEntity, (sim) => sim.cdrs)
+  @JoinColumn({ name: 'sim_id' })
+  sim: SimEntity;
 
   // readonly totalCostPercdr //!!totalBillCost
   cdrCost: number;
