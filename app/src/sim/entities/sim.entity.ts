@@ -1,4 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { CdrEntity } from 'src/cdr/entities/cdr.entity';
+import { OrganisationEntity } from 'src/organisation/entities/organisation.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('sim')
 export class SimEntity {
@@ -13,4 +22,14 @@ export class SimEntity {
 
   @Column({ name: 'registered_at' })
   registered: Date;
+
+  @ManyToOne(() => OrganisationEntity, (organisation) => organisation.sims)
+  @JoinColumn({ name: 'organisation_id' })
+  organisation: OrganisationEntity;
+
+  @OneToMany(() => CdrEntity, (cdr) => cdr.sim)
+  cdrs: CdrEntity[];
+
+  //readonly costPerSim
+  simCost: number;
 }

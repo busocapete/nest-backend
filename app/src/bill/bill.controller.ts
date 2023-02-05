@@ -5,53 +5,67 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  Query,
+  Version,
 } from '@nestjs/common';
-import { CdrService } from 'src/cdr/cdr.service';
-import { BillDto } from './dto/bill.dto';
 import { OrganisationService } from '../organisation/organisation.service';
-import { SimService } from '../sim/sim.service';
 import { BillService } from './bill.service';
+import { CurrencyService } from 'src/currency/currency.service';
+import BillResponseDto from './dto/bill-response.dto';
 
 @Controller('organisation/:id/bill')
 export class BillController {
   constructor(
     private readonly billService: BillService,
-    private readonly simService: SimService,
     private readonly organisationService: OrganisationService,
-    private readonly cdrsService: CdrService,
+    private readonly currencyService: CurrencyService,
   ) {}
   @Get()
-  async get(@Param('id', ParseIntPipe) id: number): Promise<BillDto> {
-    //Get organisation
-    const organisation = await this.organisationService.findOne(id);
+  @Version('1')
+  async get(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('currency') currencyQuery: string,
+  ): Promise<BillResponseDto> {
+    //Get organisation with sims & cdrs
+    const organisation =
+      await this.organisationService.findByIdIncludeSimsAndCdrs(id);
 
     if (organisation === null) {
       throw new HttpException('Organisation Not Found', HttpStatus.NOT_FOUND);
     }
 
-    //Get sims for Organisation
-    const sims = await this.simService.findByOrgId(id);
+    let selectedCurrency = null;
 
-    if (sims === null || sims.length === 0) {
-      throw new HttpException(
-        'No sims are registered for this organisation',
-        HttpStatus.NOT_FOUND,
+    //Covert currency from url query if present
+    if (!currencyQuery === undefined) {
+      selectedCurrency = await this.currencyService.findByName(currencyQuery);
+    }
+
+    //use organisation default currency if currencyQuery not present
+    //currencyQuery will take priority over organisation default currency.
+    if (selectedCurrency === null) {
+      selectedCurrency = await this.currencyService.findByName(
+        organisation.defaultCurrency,
       );
     }
 
-    //Get CDR's for Organisations Sim Ids
-    const cdrs = await this.cdrsService.getBySimIds(
-      sims.map(({ simId }) => simId),
-    );
-
-    //Calculat Total Cost
-    const totalCost = this.billService.calculateTotalCostofCdrs(cdrs);
+    //convert costs with selected currency rate
+    const organisationToReturn =
+      await this.billService.convertToSelectedCurrency(
+        organisation,
+        selectedCurrency,
+      );
 
     //return as BillDTO
     return {
-      organisationName: organisation.name,
-      totalCost,
-      usage: cdrs.sort((a, b) => a.rateZoneId - b.rateZoneId),
+      statusCode: 200,
+      message: 'success',
+      user: 1,
+      timeStamp: Date.now(),
+      data: {
+        organisation: organisationToReturn,
+        currency: selectedCurrency,
+      },
     };
   }
 }

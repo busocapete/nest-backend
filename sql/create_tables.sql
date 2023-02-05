@@ -13,7 +13,8 @@ INSERT IGNORE INTO
   VALUES
     (1, 'Awesome Trackers INC.'),
     (2, 'Hudson Elevators'),
-    (3, 'Tree Water Systems');
+    (3, 'Tree Water Systems'),
+    (4, 'Peters IoT Company');
 
 
 CREATE TABLE IF NOT EXISTS `sim` (
@@ -113,3 +114,19 @@ INSERT INTO
     (8, 1, 0.2, NOW()),
     (9, 2, 4.1, NOW())
 ;
+
+
+CREATE TABLE `currency` (
+  `currency_id` INT NOT NULL
+    PRIMARY KEY AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `rate` DECIMAL(14, 6) NOT NULL
+
+  );
+
+INSERT IGNORE INTO
+  `currency`(`currency_id`, `name`, `rate`)
+  VALUES
+    (1, 'EUR', 1),
+    (2, 'USD', 1.07),
+    (3, 'GBP', 0.88);

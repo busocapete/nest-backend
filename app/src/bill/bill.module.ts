@@ -5,15 +5,28 @@ import { BillController } from './bill.controller';
 import { BillService } from './bill.service';
 import { SimService } from '../sim/sim.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SimEntity } from 'src/sim/entities/sim.entity';
-import { OrganisationEntity } from 'src/db/entitys/organisation.entity';
-import { CdrEntity } from 'src/cdr/entities/cdr.entity';
+import { SimEntity } from '../sim/entities/sim.entity';
+import { OrganisationEntity } from '../organisation/entities/organisation.entity';
+import { CdrEntity } from '../cdr/entities/cdr.entity';
+import { CurrencyEntity } from '../currency/entities/currency.entity';
+import { CurrencyService } from '../currency/currency.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([SimEntity, OrganisationEntity, CdrEntity]),
+    TypeOrmModule.forFeature([
+      SimEntity,
+      OrganisationEntity,
+      CdrEntity,
+      CurrencyEntity,
+    ]),
   ],
   controllers: [BillController],
-  providers: [BillService, SimService, OrganisationService, CdrService],
+  providers: [
+    BillService,
+    SimService,
+    OrganisationService,
+    CdrService,
+    CurrencyService,
+  ],
 })
 export class BillModule {}
