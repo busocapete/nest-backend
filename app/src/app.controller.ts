@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { AppService } from './app.service';
-import { OrganisationEntity } from './db/entitys/organisation.entity';
+import { OrganisationEntity } from './organisation/entities/organisation.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Controller()

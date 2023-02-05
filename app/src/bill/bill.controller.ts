@@ -34,10 +34,19 @@ export class BillController {
       throw new HttpException('Organisation Not Found', HttpStatus.NOT_FOUND);
     }
 
-    let selectedCurrency = await this.currencyService.findByName(currencyQuery);
+    let selectedCurrency = null;
 
+    //Covert currency from url query if present
+    if (!currencyQuery === undefined) {
+      selectedCurrency = await this.currencyService.findByName(currencyQuery);
+    }
+
+    //use organisation default currency if currencyQuery not present
+    //currencyQuery will take priority over organisation default currency.
     if (selectedCurrency === null) {
-      selectedCurrency = await this.currencyService.findByName('EUR');
+      selectedCurrency = await this.currencyService.findByName(
+        organisation.defaultCurrency,
+      );
     }
 
     //convert costs with selected currency rate

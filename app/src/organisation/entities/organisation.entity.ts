@@ -12,7 +12,7 @@ export class OrganisationEntity {
   //readonly - not mapped
   totalBillCost: number;
 
-  defaultCurrency = 'EUR';
+  defaultCurrency = 'USD';
 
   @OneToMany(() => SimEntity, (sim) => sim.organisation)
   sims: SimEntity[];

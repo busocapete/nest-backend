@@ -1,5 +1,5 @@
 import { EntitySubscriberInterface, EventSubscriber } from 'typeorm';
-import { OrganisationEntity } from '../db/entitys/organisation.entity';
+import { OrganisationEntity } from './entities/organisation.entity';
 
 @EventSubscriber()
 export class OrganisationSubscriber

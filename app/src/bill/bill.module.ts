@@ -6,7 +6,7 @@ import { BillService } from './bill.service';
 import { SimService } from '../sim/sim.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SimEntity } from '../sim/entities/sim.entity';
-import { OrganisationEntity } from '../db/entitys/organisation.entity';
+import { OrganisationEntity } from '../organisation/entities/organisation.entity';
 import { CdrEntity } from '../cdr/entities/cdr.entity';
 import { CurrencyEntity } from '../currency/entities/currency.entity';
 import { CurrencyService } from '../currency/currency.service';
