@@ -32,4 +32,10 @@ export class SimEntity {
 
   //readonly costPerSim
   simCost: number;
+
+  //readonly volumePerSim i.e. Sum volumes of CDR[]
+  simVolume: number;
+
+  //readonly sim display cost
+  displaySimCost: string;
 }

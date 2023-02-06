@@ -8,6 +8,7 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { CurrencyEntity } from 'src/currency/entities/currency.entity';
 
 @Entity('cdr')
 export class CdrEntity {
@@ -35,4 +36,8 @@ export class CdrEntity {
 
   // readonly totalCostPercdr //!!totalBillCost
   cdrCost: number;
+
+  displayCurrency: string;
+
+  displayCdrCost: string;
 }

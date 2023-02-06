@@ -11,7 +11,7 @@ export class CdrSubscriber implements EntitySubscriberInterface<CdrEntity> {
 
   async afterLoad(cdr: CdrEntity): Promise<void> {
     if (cdr.rate != null) {
-      cdr.cdrCost = cdr.volume * cdr.rate.amountPerVolume;
+      //cdr.cdrCost = cdr.volume * cdr.rate.amountPerVolume;
       delete cdr.rate.rateZoneId;
     }
   }

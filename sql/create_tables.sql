@@ -2,19 +2,65 @@ CREATE DATABASE IF NOT EXISTS `emnify`;
 USE `emnify`;
 
 
-CREATE TABLE IF NOT EXISTS `organisation` (
-  `organisation_id` INT NOT NULL
+CREATE TABLE IF NOT EXISTS `tariff` (
+   `tariff_id` INT NOT NULL
     PRIMARY KEY AUTO_INCREMENT,
-  `name` VARCHAR(250) NOT NULL
+  `name` VARCHAR(255) NOT NULL,
+  `subscription_cost_per_sim` DECIMAL(14, 2) NOT NULL,
+  `inclusive_volume` DECIMAL(14, 2) NOT NULL,
+  `payg` BOOLEAN DEFAULT 0,
+  `active_from` DATETIME NOT NULL,
+  `active_to` DATETIME NULL
+);
+
+INSERT IGNORE INTO
+  `tariff`(`tariff_id`, `name`, `subscription_cost_per_sim`, `inclusive_volume`, `payg`, `active_from`, `active_to`)
+  VALUES
+    (1, 'Inclusive Standard', 10, 50, 0, NOW(), null),
+    (2, 'Inclusive Premium', 25, 200, 0, NOW(), null),
+    (3, 'Pay As You Go', 0, 0, 1, NOW(), null);
+
+CREATE TABLE IF NOT EXISTS `currency` (
+  `currency_id` INT NOT NULL
+    PRIMARY KEY AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `rate` DECIMAL(14, 2) NOT NULL,
+  `symbol` VARCHAR(255) NOT NULL
   );
 
 INSERT IGNORE INTO
-  `organisation` (`organisation_id`, `name`)
+  `currency`(`currency_id`, `name`, `rate`, `symbol`)
   VALUES
-    (1, 'Awesome Trackers INC.'),
-    (2, 'Hudson Elevators'),
-    (3, 'Tree Water Systems'),
-    (4, 'Peters IoT Company');
+    (1, 'EUR', 1, '€'),
+    (2, 'GBP', 0.88, '£'),
+    (3, 'USD', 1.07, '$');
+
+
+
+CREATE TABLE IF NOT EXISTS `organisation` (
+  `organisation_id` INT NOT NULL
+    PRIMARY KEY AUTO_INCREMENT,
+  `name` VARCHAR(250) NOT NULL,
+  `currency_id` INT NOT NULL,
+  `tariff_id` INT NOT NULL,
+  CONSTRAINT `organisation_currency_id`
+    FOREIGN KEY (`currency_id`)
+      REFERENCES `currency` (`currency_id`)
+      ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `organisation_tariff_id`
+    FOREIGN KEY (`tariff_id`)
+      REFERENCES `tariff` (`tariff_id`)
+      ON DELETE CASCADE ON UPDATE NO ACTION
+  
+  );
+
+INSERT IGNORE INTO
+  `organisation` (`organisation_id`, `name`, `currency_id`, `tariff_id`)
+  VALUES
+    (1, 'Awesome Trackers INC.', 1, 1),
+    (2, 'Hudson Elevators', 2, 2),
+    (3, 'Tree Water Systems', 3, 3),
+    (4, 'Peters IoT Company', 1, 1);
 
 
 CREATE TABLE IF NOT EXISTS `sim` (
@@ -114,19 +160,3 @@ INSERT INTO
     (8, 1, 0.2, NOW()),
     (9, 2, 4.1, NOW())
 ;
-
-
-CREATE TABLE `currency` (
-  `currency_id` INT NOT NULL
-    PRIMARY KEY AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
-  `rate` DECIMAL(14, 6) NOT NULL
-
-  );
-
-INSERT IGNORE INTO
-  `currency`(`currency_id`, `name`, `rate`)
-  VALUES
-    (1, 'EUR', 1),
-    (2, 'USD', 1.07),
-    (3, 'GBP', 0.88);
