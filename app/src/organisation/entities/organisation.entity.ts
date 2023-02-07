@@ -1,6 +1,6 @@
-import { CurrencyEntity } from 'src/currency/entities/currency.entity';
-import { SimEntity } from 'src/sim/entities/sim.entity';
-import { TariffEntity } from 'src/tariff/entities/tariff.entity';
+import { CurrencyEntity } from '../../currency/entities/currency.entity';
+import { SimEntity } from '../../sim/entities/sim.entity';
+import { TariffEntity } from '../../tariff/entities/tariff.entity';
 import {
   Column,
   Entity,

@@ -1,5 +1,5 @@
-import { CdrEntity } from 'src/cdr/entities/cdr.entity';
-import { OrganisationEntity } from 'src/organisation/entities/organisation.entity';
+import { CdrEntity } from '../../cdr/entities/cdr.entity';
+import { OrganisationEntity } from '../../organisation/entities/organisation.entity';
 import {
   Column,
   Entity,

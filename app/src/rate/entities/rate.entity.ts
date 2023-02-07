@@ -1,4 +1,4 @@
-import { RateZoneEntity } from 'src/ratezone/entities/rateZone.entity';
+import { RateZoneEntity } from '../../ratezone/entities/rateZone.entity';
 import {
   Column,
   Entity,

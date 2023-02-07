@@ -1,6 +1,5 @@
-import { RateZoneEntity } from 'src/ratezone/entities/rateZone.entity';
-import { RateEntity } from 'src/rate/entities/rate.entity';
-import { SimEntity } from 'src/sim/entities/sim.entity';
+import { RateEntity } from '../../rate/entities/rate.entity';
+import { SimEntity } from '../../sim/entities/sim.entity';
 import {
   Column,
   Entity,
@@ -8,7 +7,6 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CurrencyEntity } from 'src/currency/entities/currency.entity';
 
 @Entity('cdr')
 export class CdrEntity {

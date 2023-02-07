@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { OrganisationService } from '../organisation/organisation.service';
 import { BillService } from './bill.service';
-import { CurrencyService } from 'src/currency/currency.service';
+import { CurrencyService } from '../currency/currency.service';
 import BillResponseDto from './dto/bill-response.dto';
 
 @Controller('organisation/:id/bill')
