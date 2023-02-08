@@ -15,10 +15,10 @@ services:
     ports:
       - 3000:3000
     depends_on:
-       - mariadb
+      - mariadb
   mariadb:
     image: mariadb:latest
-    restart: 'no'
+    restart: "no"
     environment:
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
     ports:

@@ -1,5 +1,14 @@
-import { SimEntity } from 'src/sim/entities/sim.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { CurrencyEntity } from '../../currency/entities/currency.entity';
+import { SimEntity } from '../../sim/entities/sim.entity';
+import { TariffEntity } from '../../tariff/entities/tariff.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('organisation')
 export class OrganisationEntity {
@@ -10,10 +19,27 @@ export class OrganisationEntity {
   name: string;
 
   //readonly - not mapped
+  totalUsageCost: number;
+
+  //readonly - not mapped
+  displayTotalUsageCost: string;
+
+  totalSubscriptionCost: number;
+
+  displayTotalSubscriptionCost: string;
+
   totalBillCost: number;
 
-  defaultCurrency = 'USD';
+  displayTotalBillCost: string;
 
   @OneToMany(() => SimEntity, (sim) => sim.organisation)
   sims: SimEntity[];
+
+  @OneToOne(() => CurrencyEntity, (currency) => currency, { eager: true })
+  @JoinColumn({ name: 'currency_id' })
+  defaultCurrency: CurrencyEntity;
+
+  @OneToOne(() => TariffEntity, (tariff) => tariff, { eager: true })
+  @JoinColumn({ name: 'tariff_id' })
+  tariff: TariffEntity;
 }

@@ -17,6 +17,8 @@ import { BillService } from './bill/bill.service';
 import { BillModule } from './bill/bill.module';
 import { CurrencyModule } from './currency/currency.module';
 import { CurrencyService } from './currency/currency.service';
+import { TariffModule } from './tariff/tariff.module';
+import { TariffService } from './tariff/tariff.service';
 
 @Module({
   imports: [
@@ -28,6 +30,7 @@ import { CurrencyService } from './currency/currency.service';
     RateModule,
     BillModule,
     CurrencyModule,
+    TariffModule,
   ],
   controllers: [
     AppController,
@@ -42,6 +45,7 @@ import { CurrencyService } from './currency/currency.service';
     SimService,
     BillService,
     CurrencyService,
+    TariffService,
   ],
 })
 export class AppModule {}

@@ -1,5 +1,5 @@
-import { CdrEntity } from 'src/cdr/entities/cdr.entity';
-import { OrganisationEntity } from 'src/organisation/entities/organisation.entity';
+import { CdrEntity } from '../../cdr/entities/cdr.entity';
+import { OrganisationEntity } from '../../organisation/entities/organisation.entity';
 import {
   Column,
   Entity,
@@ -32,4 +32,10 @@ export class SimEntity {
 
   //readonly costPerSim
   simCost: number;
+
+  //readonly volumePerSim i.e. Sum volumes of CDR[]
+  simVolume: number;
+
+  //readonly sim display cost
+  displaySimCost: string;
 }

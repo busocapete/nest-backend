@@ -28,6 +28,7 @@ export class OrganisationService {
     return this.organisations.findOne({
       where: { organisationId: id },
       relations: [
+        'tariff',
         'sims',
         'sims.cdrs',
         'sims.cdrs.rate',

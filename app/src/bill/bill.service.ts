@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { CdrEntity } from 'src/cdr/entities/cdr.entity';
-import { CurrencyEntity } from 'src/currency/entities/currency.entity';
-import { OrganisationEntity } from 'src/organisation/entities/organisation.entity';
+import { CdrEntity } from '../cdr/entities/cdr.entity';
+import { CurrencyEntity } from '../currency/entities/currency.entity';
+import { OrganisationEntity } from '../organisation/entities/organisation.entity';
 
 @Injectable()
 export class BillService {
@@ -17,17 +17,38 @@ export class BillService {
     organisation: OrganisationEntity,
     selectedCurrency: CurrencyEntity,
   ): OrganisationEntity {
-    organisation.totalBillCost = this.calculateTotalBillCost(
-      organisation,
-      selectedCurrency,
-    );
     organisation.sims.map((sim) => {
       sim.simCost = sim.simCost * selectedCurrency.rate;
+      sim.displaySimCost = selectedCurrency.symbol + sim.simCost.toFixed(2);
 
       sim.cdrs.map((cdr) => {
-        cdr.cdrCost = cdr.cdrCost * selectedCurrency.rate;
+        cdr.cdrCost = +cdr.cdrCost * +selectedCurrency.rate;
+        cdr.displayCurrency = selectedCurrency.name;
+        cdr.displayCdrCost = selectedCurrency.symbol + cdr.cdrCost.toFixed(2);
       });
     });
+
+    organisation.totalUsageCost =
+      organisation.totalUsageCost * selectedCurrency.rate;
+
+    if (!organisation.tariff.isPayg) {
+      organisation.totalSubscriptionCost =
+        organisation.totalSubscriptionCost * selectedCurrency.rate;
+    } else {
+      organisation.totalSubscriptionCost = 0.0;
+    }
+
+    organisation.displayTotalUsageCost =
+      selectedCurrency.symbol + organisation.totalUsageCost.toFixed(2);
+
+    organisation.displayTotalSubscriptionCost =
+      selectedCurrency.symbol + organisation.totalSubscriptionCost.toFixed(2);
+
+    organisation.totalBillCost =
+      organisation.totalBillCost * selectedCurrency.rate;
+
+    organisation.displayTotalBillCost =
+      selectedCurrency.symbol + organisation.totalBillCost.toFixed(2);
 
     return organisation;
   }
@@ -36,6 +57,6 @@ export class BillService {
     organisation: OrganisationEntity,
     selectedCurrency: CurrencyEntity,
   ) {
-    return organisation.totalBillCost * selectedCurrency.rate;
+    return organisation.totalUsageCost * selectedCurrency.rate;
   }
 }

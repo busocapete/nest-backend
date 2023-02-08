@@ -10,4 +10,7 @@ export class CurrencyEntity {
 
   @Column({ name: 'rate' })
   rate: number;
+
+  @Column({ name: 'symbol' })
+  symbol: string;
 }

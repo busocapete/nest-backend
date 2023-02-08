@@ -4,10 +4,9 @@ import { OrganisationEntity } from '../organisation/entities/organisation.entity
 import { SimEntity } from '../sim/entities/sim.entity';
 import { RateEntity } from '../rate/entities/rate.entity';
 import { RateZoneEntity } from '../ratezone/entities/rateZone.entity';
-import { CdrSubscriber } from 'src/cdr/cdr.subscriber';
-import { CurrencyEntity } from 'src/currency/entities/currency.entity';
-import { SimSubscriber } from 'src/sim/sim.subscriber';
-import { OrganisationSubscriber } from 'src/organisation/organisation.subscriber';
+import { CurrencyEntity } from '../currency/entities/currency.entity';
+import { OrganisationSubscriber } from '../organisation/organisation.subscriber';
+import { TariffEntity } from '../tariff/entities/tariff.entity';
 
 export const entities = [
   OrganisationEntity,
@@ -16,6 +15,7 @@ export const entities = [
   RateZoneEntity,
   RateEntity,
   CurrencyEntity,
+  TariffEntity,
 ];
 
 export const dbConfigFactory: () => Promise<TypeOrmModuleOptions> =
@@ -28,5 +28,5 @@ export const dbConfigFactory: () => Promise<TypeOrmModuleOptions> =
     database: 'emnify',
     entities,
     synchronize: false,
-    subscribers: [CdrSubscriber, SimSubscriber, OrganisationSubscriber],
+    subscribers: [OrganisationSubscriber],
   });

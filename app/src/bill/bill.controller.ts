@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { OrganisationService } from '../organisation/organisation.service';
 import { BillService } from './bill.service';
-import { CurrencyService } from 'src/currency/currency.service';
+import { CurrencyService } from '../currency/currency.service';
 import BillResponseDto from './dto/bill-response.dto';
 
 @Controller('organisation/:id/bill')
@@ -34,19 +34,12 @@ export class BillController {
       throw new HttpException('Organisation Not Found', HttpStatus.NOT_FOUND);
     }
 
-    let selectedCurrency = null;
+    let selectedCurrency = organisation.defaultCurrency;
 
-    //Covert currency from url query if present
-    if (!currencyQuery === undefined) {
+    //Covert currency from url query and override org.defaultCurrency if
+    //currencyQuery is present
+    if (currencyQuery !== undefined) {
       selectedCurrency = await this.currencyService.findByName(currencyQuery);
-    }
-
-    //use organisation default currency if currencyQuery not present
-    //currencyQuery will take priority over organisation default currency.
-    if (selectedCurrency === null) {
-      selectedCurrency = await this.currencyService.findByName(
-        organisation.defaultCurrency,
-      );
     }
 
     //convert costs with selected currency rate
@@ -64,7 +57,7 @@ export class BillController {
       timeStamp: Date.now(),
       data: {
         organisation: organisationToReturn,
-        currency: selectedCurrency,
+        billDisplayCurrency: selectedCurrency,
       },
     };
   }
