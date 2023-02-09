@@ -19,6 +19,8 @@ import { CurrencyModule } from './currency/currency.module';
 import { CurrencyService } from './currency/currency.service';
 import { TariffModule } from './tariff/tariff.module';
 import { TariffService } from './tariff/tariff.service';
+import { RatezoneController } from './ratezone/ratezone.controller';
+import { RatezoneService } from './ratezone/ratezone.service';
 
 @Module({
   imports: [
@@ -37,6 +39,7 @@ import { TariffService } from './tariff/tariff.service';
     OrganisationController,
     CdrController,
     BillController,
+    RatezoneController,
   ],
   providers: [
     AppService,
@@ -46,6 +49,7 @@ import { TariffService } from './tariff/tariff.service';
     BillService,
     CurrencyService,
     TariffService,
+    RatezoneService,
   ],
 })
 export class AppModule {}

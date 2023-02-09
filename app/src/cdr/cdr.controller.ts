@@ -1,7 +1,9 @@
-import { Controller, Get, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Delete, Post, Body } from '@nestjs/common';
 import { CdrService } from './cdr.service';
+import { CreateCdrDto } from './dto/create-cdr.dto';
+import { CdrEntity } from './entities/cdr.entity';
 
-@Controller('cdr')
+@Controller('cdrs')
 export class CdrController {
   constructor(private readonly cdrService: CdrService) {}
 
@@ -28,5 +30,10 @@ export class CdrController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.cdrService.remove(+id);
+  }
+
+  @Post()
+  create(@Body() createCdrDto: CreateCdrDto): Promise<CdrEntity> {
+    return this.cdrService.create(createCdrDto);
   }
 }

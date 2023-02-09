@@ -6,12 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
 } from '@nestjs/common';
 import { CurrencyService } from './currency.service';
 import { CreateCurrencyDto } from './dto/create-currency.dto';
 import { UpdateCurrencyDto } from './dto/update-currency.dto';
 
-@Controller('currency')
+@Controller('currencies')
 export class CurrencyController {
   constructor(private readonly currencyService: CurrencyService) {}
 
@@ -38,6 +39,7 @@ export class CurrencyController {
     return this.currencyService.update(+id, updateCurrencyDto);
   }
 
+  @HttpCode(204)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.currencyService.remove(+id);

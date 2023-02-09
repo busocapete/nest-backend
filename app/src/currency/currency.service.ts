@@ -13,7 +13,7 @@ export class CurrencyService {
   ) {}
 
   create(createCurrencyDto: CreateCurrencyDto) {
-    return 'This action adds a new currency';
+    return this.currencies.save({ ...createCurrencyDto });
   }
 
   findAll() {
@@ -41,6 +41,6 @@ export class CurrencyService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} currency`;
+    return this.currencies.delete(id);
   }
 }

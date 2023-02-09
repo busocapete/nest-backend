@@ -15,7 +15,7 @@ async function bootstrap() {
     type: VersioningType.URI,
     defaultVersion: '1',
   });
-  //changing port to 3003
-  await app.listen(3003);
+  //changing port to 8000
+  await app.listen(8000);
 }
 bootstrap();

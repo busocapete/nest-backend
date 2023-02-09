@@ -22,7 +22,7 @@ export const dbConfigFactory: () => Promise<TypeOrmModuleOptions> =
   async () => ({
     type: 'mariadb',
     host: 'host.docker.internal',
-    port: 3306,
+    port: Number.parseInt(process.env.MARIADB_PORT),
     username: 'root',
     password: process.env.MARIADB_ROOT_PASSWORD,
     database: 'emnify',

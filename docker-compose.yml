@@ -15,6 +15,7 @@ services:
     ports:
       - 3000:3000
     depends_on:
+      - testdb
       - mariadb
   mariadb:
     image: mariadb:latest
@@ -27,5 +28,17 @@ services:
       - docker-nest-mariadb:/var/lib/mysql
       # copy the sql script to create tables
       - ./sql/:/docker-entrypoint-initdb.d/
+  testdb:
+    image: mariadb:latest
+    restart: "no"
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    ports:
+      - 3307:3306
+    volumes:
+      - docker-nest-testdb:/var/lib/mysql
+      # copy the sql script to create tables
+      - ./testsql/:/docker-entrypoint-initdb.d/
 volumes:
   docker-nest-mariadb:
+  docker-nest-testdb:

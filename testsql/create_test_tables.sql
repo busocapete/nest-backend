@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS `tariff` (
 INSERT IGNORE INTO
   `tariff`(`tariff_id`, `name`, `subscription_cost_per_sim`, `inclusive_volume`, `payg`, `active_from`, `active_to`)
   VALUES
-    (1, 'Inclusive Standard', 10, 50, 0, NOW(), null),
-    (2, 'Inclusive Premium', 25, 200, 0, NOW(), null),
+    (1, 'Inclusive Test Standard', 10, 50, 0, NOW(), null),
+    (2, 'Inclusive Test Premium', 25, 200, 0, NOW(), null),
     (3, 'Pay As You Go', 0, 0, 1, NOW(), null);
 
 CREATE TABLE IF NOT EXISTS `currency` (
@@ -59,8 +59,7 @@ INSERT IGNORE INTO
   VALUES
     (1, 'Awesome Trackers INC.', 1, 1),
     (2, 'Hudson Elevators', 2, 2),
-    (3, 'Tree Water Systems', 3, 3),
-    (4, 'Peters IoT Company', 1, 1);
+    (3, 'Tree Water Systems', 3, 3);
 
 
 CREATE TABLE IF NOT EXISTS `sim` (

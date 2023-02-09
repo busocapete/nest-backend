@@ -14,6 +14,7 @@ export class OrganisationSubscriber
     let simVolumeAllowance = 0;
 
     if (org.sims !== null && org.sims !== undefined) {
+      console.log(org.name + ' - ' + org.sims.length);
       //check organisation has a tariff
       if (org.tariff !== null) {
         simVolumeAllowance = org.tariff.inclusiveVolume;
@@ -60,7 +61,7 @@ export class OrganisationSubscriber
                 }
               }
 
-              delete cdr.rate.rateZoneId;
+              delete cdr.rate.ratezoneId;
               delete cdr.simId;
               //add the current cdr cost to the total sim cost
               return (simTotalCost += +cdr.cdrCost);
@@ -69,7 +70,7 @@ export class OrganisationSubscriber
             sim.simCost = simTotalCost;
 
             //remove unnecessary orgId from json response
-            delete sim.organisationid;
+            delete sim.organisationId;
           }
           //add current sim cost to the total bill cost
           return (totalUsageCost += sim.simCost);
@@ -83,11 +84,6 @@ export class OrganisationSubscriber
           org.sims.length * org.tariff.subscriptionCostPerSim;
 
         org.totalBillCost = org.totalUsageCost + org.totalSubscriptionCost;
-
-        // if (org.tariff.isPayg) {
-        //   delete org.totalSubscriptionCost;
-        //   delete org.displayTotalSubscriptionCost;
-        // }
       }
     }
   }
