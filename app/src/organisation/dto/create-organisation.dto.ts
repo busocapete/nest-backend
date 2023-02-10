@@ -7,4 +7,5 @@ export class CreateOrgansiationDto {
 
   defaultCurrencyId: number;
   tariffId: number;
+  apiKey: string;
 }

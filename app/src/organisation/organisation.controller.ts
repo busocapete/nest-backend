@@ -3,17 +3,22 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   HttpCode,
   HttpStatus,
   Param,
   ParseIntPipe,
   Post,
+  UseGuards,
   Version,
 } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions';
+import { AdminGuard } from '../auth/guard/admin.guard';
+import { JwtGuard, OrganisationGuard } from '../auth/guard';
 import { CreateOrgansiationDto } from './dto/create-organisation.dto';
 import { OrganisationService } from './organisation.service';
 
+@UseGuards(JwtGuard)
 @Controller('organisations')
 export class OrganisationController {
   constructor(private readonly organisationService: OrganisationService) {}
@@ -30,17 +35,25 @@ export class OrganisationController {
   //Would require @Headers
   //Custom header for external orgs API Key
   //Could also include custom headers for fields to return...
-  async getOrganisation(@Param('id', ParseIntPipe) id: number) {
+  @UseGuards(OrganisationGuard)
+  async getOrganisation(
+    @Headers() headers,
+    @Param('id', ParseIntPipe)
+    id: number,
+  ) {
     const orgToReturn = await this.organisationService.findById(id);
-
+    if (headers.apikey !== undefined) {
+      console.log(headers.apikey);
+    }
+    console.log(headers);
     //test organisation exists to return 404 when null
     if (orgToReturn === null) {
       throw new HttpException('Organisation Not Found', HttpStatus.NOT_FOUND);
     }
 
     //would map org to return to a response Dto
-    //to control which data is returned.
-    //likely want different data retuned based on roles.
+    //to control fields returned.
+    //May want different returned based on roles.
     //example on bill controller @Get(':id') method
     return orgToReturn;
   }
@@ -48,6 +61,7 @@ export class OrganisationController {
   @Get()
   @Version('1')
   //as above.  only return to emnify admin.
+  @UseGuards(AdminGuard)
   async getOrganisationList() {
     return this.organisationService.findAll();
   }

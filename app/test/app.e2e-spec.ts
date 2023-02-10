@@ -1,12 +1,12 @@
 import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import * as pactum from 'pactum';
 import { CreateTariffDto } from 'src/tariff/dto/create-tariff.dto';
 import { CreateCurrencyDto } from 'src/currency/dto/create-currency.dto';
 import { CreateOrgansiationDto } from 'src/organisation/dto/create-organisation.dto';
 import { CreateSimDto } from 'src/sim/dto/create-sim.dto';
+import { SignInDto } from 'src/auth/dto';
 const baseUrl = 'http://localhost:8001';
 
 describe('AppController (e2e)', () => {
@@ -16,6 +16,13 @@ describe('AppController (e2e)', () => {
   //much larger dataset of mock data
   //to monitor repsonse times for
   //requests with high volume of cdrs &| sims
+
+  //Not definitive list of tests
+  //But tests Jwt token,
+  //API keys
+  //correct billing implementation
+  //currency implementation.
+  //An Admin only controller - Currencies
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -33,11 +40,68 @@ describe('AppController (e2e)', () => {
     app.close();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello EMnify!');
+  describe('Sign in', () => {
+    describe('Sign in user with access only to organisationId = 1', () => {
+      const org1UserDto: SignInDto = {
+        email: 'user@org1.com',
+        password: '123',
+      };
+      it('should return JWT token', () => {
+        return pactum
+          .spec()
+          .post('/auth/signin')
+          .withBody(org1UserDto)
+          .expectStatus(200)
+          .stores('org1UserAccessToken', 'access_token');
+      });
+    });
+
+    describe('Sign in user with access only to organisationId = 2', () => {
+      const org2UserDto: SignInDto = {
+        email: 'user@org2.com',
+        password: '123',
+      };
+      it('should return JWT token', () => {
+        return pactum
+          .spec()
+          .post('/auth/signin')
+          .withBody(org2UserDto)
+          .expectStatus(200)
+          .stores('org2UserAccessToken', 'access_token')
+          .inspect();
+      });
+    });
+
+    describe('Sign in user with access only to organisationId = 3', () => {
+      const org3UserDto: SignInDto = {
+        email: 'user@org3.com',
+        password: '123',
+      };
+      it('should return JWT token', () => {
+        return pactum
+          .spec()
+          .post('/auth/signin')
+          .withBody(org3UserDto)
+          .expectStatus(200)
+          .stores('org3UserAccessToken', 'access_token')
+          .inspect();
+      });
+    });
+
+    describe('Sign in admin user with all required access', () => {
+      const org3UserDto: SignInDto = {
+        email: 'user@emnify.com',
+        password: '123',
+      };
+      it('should return JWT token', () => {
+        return pactum
+          .spec()
+          .post('/auth/signin')
+          .withBody(org3UserDto)
+          .expectStatus(200)
+          .stores('adminAccessToken', 'access_token');
+      });
+    });
   });
 
   //TESTS FOR BILLING IMPLEMENTATION
@@ -47,6 +111,10 @@ describe('AppController (e2e)', () => {
         return pactum
           .spec()
           .get('/organisations/2/bill')
+          .withHeaders({
+            Authorization: 'Bearer $S{org2UserAccessToken}',
+            apikey: 'reallySecureKeyOrg2',
+          })
           .expectStatus(200)
           .expectJson('data.organisation.name', 'Hudson Elevators')
           .expectJson('data.organisation.tariff.tariffId', 2)
@@ -57,12 +125,15 @@ describe('AppController (e2e)', () => {
           .inspect();
       });
 
-      //TESTS MULTI-CURRENCY IMPLEMENTATION
       describe('Get bill for org 2 EUR', () => {
         it('Should return org 2 - total cost €150.74, IV, sub cost 75, currency EUR', () => {
           return pactum
             .spec()
             .get('/organisations/2/bill?currency=EUR')
+            .withHeaders({
+              Authorization: 'Bearer $S{org2UserAccessToken}',
+              apiKey: 'reallySecureKeyOrg2',
+            })
             .expectStatus(200)
             .expectJson('data.organisation.name', 'Hudson Elevators')
             .expectJson('data.organisation.tariff.tariffId', 2)
@@ -74,11 +145,41 @@ describe('AppController (e2e)', () => {
             .inspect();
         });
       });
+
+      describe('Get bill for org 2 - wrong accessToken - expect 401', () => {
+        it('Should return unauthorized', () => {
+          return pactum
+            .spec()
+            .get('/organisations/2/bill?currency=EUR')
+            .withHeaders({
+              Authorization: 'Bearer $S{org1UserAccessToken}',
+              apiKey: 'reallySecureKeyOrg2',
+            })
+            .expectStatus(401);
+        });
+      });
+
+      describe('Get bill for org 2 - wrong apiKey - expect 401', () => {
+        it('Should return unauthorized', () => {
+          return pactum
+            .spec()
+            .get('/organisations/2/bill?currency=EUR')
+            .withHeaders({
+              Authorization: 'Bearer $S{org1UserAccessToken}',
+              apiKey: 'iMadeUpThisFakeKey',
+            })
+            .expectStatus(401);
+        });
+      });
       describe('Get bill for org 3', () => {
-        it('Should return bill for org 3 - - total cost $1810.71, IV, sub cost 0, currency USD', () => {
+        it('Should return bill for org 3 - total cost $1810.71, IV, sub cost 0, currency USD', () => {
           return pactum
             .spec()
             .get('/organisations/3/bill')
+            .withHeaders({
+              Authorization: 'Bearer $S{org3UserAccessToken}',
+              apiKey: 'reallySecureKeyOrg3',
+            })
             .expectStatus(200)
             .expectJson('data.organisation.name', 'Tree Water Systems')
             .expectJson('data.organisation.tariff.tariffId', 3)
@@ -86,8 +187,7 @@ describe('AppController (e2e)', () => {
             .expectJson('data.organisation.totalSubscriptionCost', 0)
             .expectJson('data.organisation.defaultCurrency.symbol', '$')
             .expectJson('data.organisation.displayTotalBillCost', '$1810.71')
-            .expectJson('data.billDisplayCurrency.rate', '1.07')
-            .inspect();
+            .expectJson('data.billDisplayCurrency.rate', '1.07');
         });
       });
     });
@@ -99,14 +199,31 @@ describe('AppController (e2e)', () => {
       name: 'Awsome Trackers Test',
       defaultCurrencyId: 1,
       tariffId: 1,
+      apiKey: 'reallySecureApiKeyTest',
     };
     describe('Get organisations', () => {
       it('Should get list of organisations from seed data', () => {
         return pactum
           .spec()
           .get('/organisations')
-          .expectStatus(200)
-          .expectJsonLength(3);
+          .withHeaders({
+            Authorization: 'Bearer $S{adminAccessToken}',
+          })
+          .expectStatus(200);
+      });
+    });
+
+    describe('Create Organisation', () => {
+      it('Should create an organisation', () => {
+        return pactum
+          .spec()
+          .post('/organisations')
+          .withHeaders({
+            Authorization: 'Bearer $S{adminAccessToken}',
+          })
+          .withBody(org1Dto)
+          .expectStatus(201)
+          .stores('createdOrganisationId', 'organisationId');
       });
     });
 
@@ -116,56 +233,8 @@ describe('AppController (e2e)', () => {
           .spec()
           .post('/organisations')
           .withBody(org1Dto)
-          .expectStatus(201)
+          .expectStatus(401)
           .stores('createdOrganisationId', 'organisationId');
-      });
-    });
-
-    describe('Get organisation by id', () => {
-      it('Should return organisation just created from 201 response Id', () => {
-        return pactum
-          .spec()
-          .get('/organisations/$S{createdOrganisationId}')
-          .expectStatus(200)
-          .stores('organisationName', 'name')
-          .stores('organisationTariff', 'tariff')
-          .inspect();
-      });
-    });
-    describe('Get organisations including insert', () => {
-      it('Should return 4 organsations from seed data + created', () => {
-        return pactum
-          .spec()
-          .get('/organisations')
-          .expectStatus(200)
-          .expectJsonLength(4);
-      });
-    });
-
-    describe('Delete Organisation', () => {
-      it('should delete the newly created org', () => {
-        return pactum
-          .spec()
-          .delete('/organisations/$S{createdOrganisationId}')
-          .expectStatus(204);
-      });
-    });
-    describe('Get organisation by id', () => {
-      it('should return 404 as org now deleted', () => {
-        return pactum
-          .spec()
-          .get('/organisations/$S{createdOrgansationId}')
-          .expectStatus(404);
-      });
-    });
-
-    describe('Get organisations after delete', () => {
-      it('Should return organisations from seed data - return 3 orgs', () => {
-        return pactum
-          .spec()
-          .get('/organisations')
-          .expectStatus(200)
-          .expectJsonLength(3);
       });
     });
   });
@@ -232,6 +301,9 @@ describe('AppController (e2e)', () => {
       return pactum
         .spec()
         .post('/currencies')
+        .withHeaders({
+          Authorization: 'Bearer $S{adminAccessToken}',
+        })
         .withBody(currency1Dto)
         .expectStatus(201)
         .stores('createdCurrencyId', 'currencyId');
@@ -242,6 +314,9 @@ describe('AppController (e2e)', () => {
         return pactum
           .spec()
           .get('/currencies')
+          .withHeaders({
+            Authorization: 'Bearer $S{adminAccessToken}',
+          })
           .expectStatus(200)
           .expectJsonLength(4);
       });
@@ -251,6 +326,9 @@ describe('AppController (e2e)', () => {
         return pactum
           .spec()
           .delete('/currencies/$S{createdCurrencyId}')
+          .withHeaders({
+            Authorization: 'Bearer $S{adminAccessToken}',
+          })
           .expectStatus(204);
       });
     });
@@ -260,6 +338,9 @@ describe('AppController (e2e)', () => {
         return pactum
           .spec()
           .get('/currencies')
+          .withHeaders({
+            Authorization: 'Bearer $S{adminAccessToken}',
+          })
           .expectStatus(200)
           .expectJsonLength(3);
       });

@@ -69,6 +69,9 @@ export class OrganisationEntity {
   @Column({ name: 'tariff_id' })
   tariffId: number;
 
+  @Column({ name: 'api-key' })
+  apiKey: string;
+
   //wouldn't eager load in production
   //could add @Query or @Header parameters
   //on controller to deterine response data

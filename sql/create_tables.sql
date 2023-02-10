@@ -2,6 +2,27 @@ CREATE DATABASE IF NOT EXISTS `emnify`;
 USE `emnify`;
 
 
+CREATE TABLE IF NOT EXISTS `user` (
+   `user_id` INT NOT NULL
+    PRIMARY KEY AUTO_INCREMENT,
+  `email` VARCHAR(255) NOT NULL,
+  `hash` VARCHAR(255) NOT NULL,
+  `organisation_id` INT DEFAULT 0,
+  `first_name` VARCHAR(255),
+  `last_name` VARCHAR(255),
+  `is_admin` BOOLEAN DEFAULT 0
+);
+
+
+INSERT IGNORE INTO
+  `user`(`user_id`, `email`, `hash`, `organisation_id`, `is_admin`)
+  VALUES
+    (1, 'user@org1.com', '123', 1, 0),
+    (2, 'user@org2.com', '123', 2, 0),
+    (3, 'user@org3.com', '123', 3, 0),
+    (4, 'user@emnify.com', '123', 0, 1);
+
+
 CREATE TABLE IF NOT EXISTS `tariff` (
    `tariff_id` INT NOT NULL
     PRIMARY KEY AUTO_INCREMENT,
@@ -43,6 +64,7 @@ CREATE TABLE IF NOT EXISTS `organisation` (
   `name` VARCHAR(250) NOT NULL,
   `currency_id` INT NOT NULL,
   `tariff_id` INT NOT NULL,
+  `api-key` VARCHAR(250) NOT NULL,
   CONSTRAINT `organisation_currency_id`
     FOREIGN KEY (`currency_id`)
       REFERENCES `currency` (`currency_id`)
@@ -55,12 +77,11 @@ CREATE TABLE IF NOT EXISTS `organisation` (
   );
 
 INSERT IGNORE INTO
-  `organisation` (`organisation_id`, `name`, `currency_id`, `tariff_id`)
+  `organisation` (`organisation_id`, `name`, `currency_id`, `tariff_id`, `api-key`)
   VALUES
-    (1, 'Awesome Trackers INC.', 1, 1),
-    (2, 'Hudson Elevators', 2, 2),
-    (3, 'Tree Water Systems', 3, 3),
-    (4, 'Peters IoT Company', 1, 1);
+    (1, 'Awesome Trackers INC.', 1, 1, 'reallySecureKeyOrg1'),
+    (2, 'Hudson Elevators', 2, 2, 'reallySecureKeyOrg2'),
+    (3, 'Tree Water Systems', 3, 3, 'reallySecureKeyOrg3');
 
 
 CREATE TABLE IF NOT EXISTS `sim` (

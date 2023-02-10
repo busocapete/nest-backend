@@ -7,12 +7,18 @@ import {
   ParseIntPipe,
   Query,
   Version,
+  Headers,
+  UseGuards,
 } from '@nestjs/common';
 import { OrganisationService } from '../organisation/organisation.service';
 import { BillService } from './bill.service';
 import { CurrencyService } from '../currency/currency.service';
 import BillResponseDto from './dto/bill-response.dto';
+import { GetUser } from '../auth/decorator';
+import { UserEntity } from '../auth/entities/user.entity';
+import { JwtGuard, OrganisationGuard } from '../auth/guard';
 
+@UseGuards(JwtGuard)
 @Controller('organisations/:id/bill')
 export class BillController {
   constructor(
@@ -21,12 +27,19 @@ export class BillController {
     private readonly currencyService: CurrencyService,
   ) {}
   @Get()
+  //auth/guards/organisation.guard
+  //to ensure only admin or org owners can view
+  @UseGuards(OrganisationGuard)
   @Version('1')
   async get(
+    @GetUser() userInfo: UserEntity,
+    @Headers() Headers,
+
     //would set org id as UUID for security
     //@Param('id') id: string, /83ea1c1c-a8b7-11ed-afa1-0242ac120002
     @Param('id', ParseIntPipe) id: number,
-    @Query('currency') currencyQuery: string,
+    @Query('currency')
+    currencyQuery: string,
     //Would need to add support for billing periods
     //based on returning all sim.cdrs(
     //{ where: {
@@ -36,6 +49,8 @@ export class BillController {
     //@Query('start_date') startDate: Date,
     //@Query('end_date') endDate: Date,
   ): Promise<BillResponseDto> {
+    console.log('Bill Controller', userInfo);
+
     //Get organisation with sims & cdrs
     const organisation =
       await this.organisationService.findByIdIncludeSimsAndCdrs(id);

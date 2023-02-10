@@ -21,10 +21,15 @@ import { TariffModule } from './tariff/tariff.module';
 import { TariffService } from './tariff/tariff.service';
 import { RatezoneController } from './ratezone/ratezone.controller';
 import { RatezoneService } from './ratezone/ratezone.service';
+import { AuthModule } from './auth/auth.module';
+import { AuthService } from './auth/auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     DatabaseModule,
     OrganisationModule,
     CdrModule,
@@ -33,6 +38,8 @@ import { RatezoneService } from './ratezone/ratezone.service';
     BillModule,
     CurrencyModule,
     TariffModule,
+    AuthModule,
+    ConfigModule,
   ],
   controllers: [
     AppController,
@@ -50,6 +57,8 @@ import { RatezoneService } from './ratezone/ratezone.service';
     CurrencyService,
     TariffService,
     RatezoneService,
+    AuthService,
+    JwtService,
   ],
 })
 export class AppModule {}

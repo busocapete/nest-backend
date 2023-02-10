@@ -11,6 +11,7 @@ Task for candidate: Please provide list of all shortcomings + ideas for future i
         - Rate Throttling
         - Api-key / secret Header
         - Authentication - Authorization
+        - Short lived tokens & refresh tokens
         - Roles / Policies
         - MFA
         - Device Management, i.e. devices that can access
@@ -31,8 +32,7 @@ Task for candidate: Please provide list of all shortcomings + ideas for future i
     - custom headers
         -api keys
         - response shaping (full, hateoas)
-
-
+    - database migrations with ORM
 
 # To Start:
 

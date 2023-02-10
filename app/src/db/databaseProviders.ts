@@ -7,6 +7,7 @@ import { RateZoneEntity } from '../ratezone/entities/rateZone.entity';
 import { CurrencyEntity } from '../currency/entities/currency.entity';
 import { OrganisationSubscriber } from '../organisation/organisation.subscriber';
 import { TariffEntity } from '../tariff/entities/tariff.entity';
+import { UserEntity } from '../auth/entities/user.entity';
 
 export const entities = [
   OrganisationEntity,
@@ -16,6 +17,7 @@ export const entities = [
   RateEntity,
   CurrencyEntity,
   TariffEntity,
+  UserEntity,
 ];
 
 export const dbConfigFactory: () => Promise<TypeOrmModuleOptions> =
@@ -29,4 +31,10 @@ export const dbConfigFactory: () => Promise<TypeOrmModuleOptions> =
     entities,
     synchronize: false,
     subscribers: [OrganisationSubscriber],
+
+    // migrations: [
+    //   /*initial_migration*/
+    //   /*...*/
+    // ],
+    // migrationsTableName: 'custom_migration_table',
   });
