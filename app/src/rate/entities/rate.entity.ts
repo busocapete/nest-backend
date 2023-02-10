@@ -13,7 +13,7 @@ export class RateEntity {
   rateId: number;
 
   @Column({ name: 'ratezone_id' })
-  rateZoneId: number;
+  ratezoneId: number;
 
   @Column({ name: 'amount_per_volume' })
   amountPerVolume: number;

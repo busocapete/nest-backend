@@ -11,8 +11,8 @@ export class RateService {
     private readonly rates: Repository<RateEntity>,
   ) {}
 
-  async create(dto: CreateRateDto): Promise<RateEntity> {
-    return await this.rates.save(dto);
+  async create(createRateDto: CreateRateDto): Promise<RateEntity> {
+    return this.rates.save({ ...createRateDto });
   }
 
   findAll(): Promise<RateEntity[]> {

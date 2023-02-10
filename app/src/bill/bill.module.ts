@@ -10,6 +10,8 @@ import { OrganisationEntity } from '../organisation/entities/organisation.entity
 import { CdrEntity } from '../cdr/entities/cdr.entity';
 import { CurrencyEntity } from '../currency/entities/currency.entity';
 import { CurrencyService } from '../currency/currency.service';
+import { TariffEntity } from '../tariff/entities/tariff.entity';
+import { TariffService } from '../tariff/tariff.service';
 
 @Module({
   imports: [
@@ -18,6 +20,7 @@ import { CurrencyService } from '../currency/currency.service';
       OrganisationEntity,
       CdrEntity,
       CurrencyEntity,
+      TariffEntity,
     ]),
   ],
   controllers: [BillController],
@@ -27,6 +30,7 @@ import { CurrencyService } from '../currency/currency.service';
     OrganisationService,
     CdrService,
     CurrencyService,
+    TariffService,
   ],
 })
 export class BillModule {}

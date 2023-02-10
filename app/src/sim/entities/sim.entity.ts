@@ -15,7 +15,7 @@ export class SimEntity {
   simId: number;
 
   @Column({ name: 'organisation_id' })
-  organisationid: number;
+  organisationId: number;
 
   @Column({ name: 'iccid' })
   iccid: string;

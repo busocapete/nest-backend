@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
+import { CreateCdrDto } from './dto/create-cdr.dto';
 import { CdrEntity } from './entities/cdr.entity';
 
 @Injectable()
@@ -30,5 +31,9 @@ export class CdrService {
 
   async remove(id: number): Promise<void> {
     await this.cdrs.delete(id);
+  }
+
+  async create(createCdrDto: CreateCdrDto): Promise<CdrEntity> {
+    return this.cdrs.save({ ...createCdrDto });
   }
 }

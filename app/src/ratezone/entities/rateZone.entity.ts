@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { RateEntity } from '../../rate/entities/rate.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('ratezone')
 export class RateZoneEntity {
@@ -7,4 +8,7 @@ export class RateZoneEntity {
 
   @Column({ name: 'name' })
   name: string;
+
+  @OneToMany(() => RateEntity, (rate) => rate.ratezone)
+  rate: RateEntity;
 }

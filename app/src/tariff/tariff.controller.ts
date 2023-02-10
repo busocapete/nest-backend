@@ -6,12 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
 } from '@nestjs/common';
 import { TariffService } from './tariff.service';
 import { CreateTariffDto } from './dto/create-tariff.dto';
 import { UpdateTariffDto } from './dto/update-tariff.dto';
 
-@Controller('tariff')
+@Controller('tariffs')
 export class TariffController {
   constructor(private readonly tariffService: TariffService) {}
 
@@ -27,14 +28,10 @@ export class TariffController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.tariffService.findOne(+id);
+    return this.tariffService.findById(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTariffDto: UpdateTariffDto) {
-    return this.tariffService.update(+id, updateTariffDto);
-  }
-
+  @HttpCode(204)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.tariffService.remove(+id);

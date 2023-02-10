@@ -7,6 +7,7 @@ import { RateZoneEntity } from '../ratezone/entities/rateZone.entity';
 import { CurrencyEntity } from '../currency/entities/currency.entity';
 import { OrganisationSubscriber } from '../organisation/organisation.subscriber';
 import { TariffEntity } from '../tariff/entities/tariff.entity';
+import { UserEntity } from '../auth/entities/user.entity';
 
 export const entities = [
   OrganisationEntity,
@@ -16,17 +17,24 @@ export const entities = [
   RateEntity,
   CurrencyEntity,
   TariffEntity,
+  UserEntity,
 ];
 
 export const dbConfigFactory: () => Promise<TypeOrmModuleOptions> =
   async () => ({
     type: 'mariadb',
     host: 'host.docker.internal',
-    port: 3306,
+    port: Number.parseInt(process.env.MARIADB_PORT),
     username: 'root',
     password: process.env.MARIADB_ROOT_PASSWORD,
     database: 'emnify',
     entities,
     synchronize: false,
     subscribers: [OrganisationSubscriber],
+
+    // migrations: [
+    //   /*initial_migration*/
+    //   /*...*/
+    // ],
+    // migrationsTableName: 'custom_migration_table',
   });

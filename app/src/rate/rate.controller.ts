@@ -11,7 +11,7 @@ import {
 import { CreateRateDto } from './dto/create-rate.dto';
 import { RateService } from './rate.service';
 
-@Controller('rate')
+@Controller('rates')
 export class RateController {
   constructor(private readonly rateService: RateService) {}
 
@@ -34,8 +34,8 @@ export class RateController {
   }
 
   @Post()
-  create(@Body() dto: CreateRateDto) {
-    return this.rateService.create(dto);
+  create(@Body() createRateDto: CreateRateDto) {
+    return this.rateService.create(createRateDto);
   }
 
   @Delete(':id')
