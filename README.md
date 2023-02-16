@@ -53,10 +53,28 @@ Task for candidate: Please provide list of all shortcomings + ideas for future i
 
 - change port served to 8000
 - create an endpoint which gives you the bill for a specific organisation
+
+  - login by fetching jwt from
+  - http://localhost:8000/api/v1/auth/signin
+    Admin User
+    { "email" : "user@emnify.com", "password": "123" }
+    Org 1 User
+    { "email" : "user@org1.com", "password": "123"}
   - 'http://localhost:8000/api/v1/organisations/2/bill
+    requires -
+    Headers: Authorization: Bearer ${tokenReturnedFromSigninEndpoint}
+
+    if not using admin user also requires
+    Headers - apikey: reallySecureKeyOrg1
+    OR reallySecureKeyOrg2
+    OR reallySecureKeyOrg3
+
 - implement an approach do different currency's
+  REQUIRES AUTH & HEADERS AS ABOVE
+
   -'http://localhost:8000/api/v1/organisations/2/bill?currency=EUR'
   available curencies are EUR, GBP, USD
+
 - provide an approach to implement to Inclusive volume (each Org has an inclusive volume when it exceeds it is charged as before)
   - inclusive volume for organisation 1 & 2
     - i.e

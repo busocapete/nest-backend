@@ -30,10 +30,13 @@ export class UserEntity {
   @Column({ name: 'last_name' })
   lastName: string;
 
+  //potentially have this as a scope in token
   @IsNumber()
   @Column({ name: 'organisation_id' })
   organisationId: number;
 
+  //would have this a a role stored in token
+  //in real project
   @IsBoolean()
   @Column({ name: 'is_admin' })
   isAdmin: boolean;
