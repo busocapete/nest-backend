@@ -49,51 +49,58 @@ export class BillController {
     //@Query('start_date') startDate: Date,
     //@Query('end_date') endDate: Date,
   ): Promise<BillResponseDto> {
-    console.log('Bill Controller', userInfo);
-
     //Get organisation with sims & cdrs
-    const organisation =
-      await this.organisationService.findByIdIncludeSimsAndCdrs(id);
 
-    if (organisation === null) {
-      throw new HttpException('Organisation Not Found', HttpStatus.NOT_FOUND);
+    //Organisation subscriber ./organsiation/organisation.subscriber
+    //contains billing calculation logic
+
+    try {
+      const organisation =
+        await this.organisationService.findByIdIncludeSimsAndCdrs(id);
+
+      if (organisation === null) {
+        throw new HttpException('Organisation Not Found', HttpStatus.NOT_FOUND);
+      }
+
+      let selectedCurrency = organisation.defaultCurrency;
+
+      //Covert currency from url query and override org.defaultCurrency if
+      //currencyQuery is present
+      if (currencyQuery !== undefined) {
+        selectedCurrency = await this.currencyService.findByName(currencyQuery);
+      }
+
+      //convert costs with selected currency rate
+      const organisationToReturn =
+        await this.billService.convertToSelectedCurrency(
+          organisation,
+          selectedCurrency,
+        );
+
+      //Bill.organisation.sims && || bill.organisation.cdrs
+      //would likely require some sort of pagination
+      //to ensure quick responses
+      //3x cdr entries && 3x sims per organisation
+      //isn't realistic test data.
+
+      //return as BillDto extending response Dto
+      //implement across all controllers.
+
+      //have hardcoded user / message / status for ease
+      //would include user.
+      return {
+        statusCode: 200,
+        message: 'success',
+        user: userInfo.id,
+        timeStamp: Date.now(),
+        data: {
+          organisation: organisationToReturn,
+          billDisplayCurrency: selectedCurrency,
+        },
+      };
+    } catch (error) {
+      //Log error
+      //logger.log("billing error:- ", error.message)
     }
-
-    let selectedCurrency = organisation.defaultCurrency;
-
-    //Covert currency from url query and override org.defaultCurrency if
-    //currencyQuery is present
-    if (currencyQuery !== undefined) {
-      selectedCurrency = await this.currencyService.findByName(currencyQuery);
-    }
-
-    //convert costs with selected currency rate
-    const organisationToReturn =
-      await this.billService.convertToSelectedCurrency(
-        organisation,
-        selectedCurrency,
-      );
-
-    //Bill.organisation.sims && || bill.organisation.cdrs
-    //would likely require some sort of pagination
-    //to ensure quick responses
-    //3x cdr entries && 3x sims per organisation
-    //isn't realistic test data.
-
-    //return as BillDto extending response Dto
-    //implement across all controllers.
-
-    //have hardcoded user / message / status for ease
-    //would include user.
-    return {
-      statusCode: 200,
-      message: 'success',
-      user: 1,
-      timeStamp: Date.now(),
-      data: {
-        organisation: organisationToReturn,
-        billDisplayCurrency: selectedCurrency,
-      },
-    };
   }
 }
